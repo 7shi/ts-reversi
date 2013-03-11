@@ -35,10 +35,26 @@ class Board {
 			}
 		}
 	}
+	
+	next(x: number, y: number) {
+		if (0 <= x && x <= 7 && 0 <= y && y <= 7) {
+			this.board[y][x]++
+			if (this.board[y][x] == 3)
+				this.board[y][x] = 0;
+		}
+	}
 }
 
 var board = new Board
 board.draw()
+
+canvas.onmousedown = e => {
+	var r = canvas.getBoundingClientRect()
+	var x = Math.floor((e.clientX - r.left - 10) / 30)
+	var y = Math.floor((e.clientY - r.top  - 10) / 30)
+	board.next(x, y)
+	board.draw()
+}
 
 function drawStone(x: number, y: number, c: number) {
 	if (c == 1) {
