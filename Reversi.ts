@@ -4,20 +4,36 @@ canvas.height = 260
 document.body.appendChild(canvas)
 var ctx = canvas.getContext("2d")
 
+ctx.fillStyle = "green"
+ctx.fillRect(0, 0, canvas.width, canvas.height)
+
 ctx.strokeStyle = "black"
-ctx.beginPath()
-ctx.moveTo(10, 10)
-ctx.lineTo(20, 20)
-ctx.stroke()
+for (var i = 0; i <= 8; i++)
+{
+	ctx.beginPath()
+	ctx.moveTo(i * 30 + 10,  10)
+	ctx.lineTo(i * 30 + 10, 250)
+	ctx.moveTo( 10, i * 30 + 10)
+	ctx.lineTo(250, i * 30 + 10)
+	ctx.stroke()
+}
 
+ctx.fillStyle = "white"
 ctx.beginPath()
-ctx.rect(10, 10, 20, 20)
-ctx.stroke()
+ctx.arc(115, 115, 14, 0, 2 * Math.PI)
+ctx.fill()
 
-ctx.strokeStyle = "blue"
+ctx.fillStyle = "black"
 ctx.beginPath()
-ctx.arc(20, 20, 10, 0, 2 * Math.PI)
-ctx.stroke()
+ctx.arc(145, 115, 14, 0, 2 * Math.PI)
+ctx.fill()
 
-ctx.fillStyle = "red"
-ctx.fillRect(40, 10, 20, 20)
+ctx.fillStyle = "black"
+ctx.beginPath()
+ctx.arc(115, 145, 14, 0, 2 * Math.PI)
+ctx.fill()
+
+ctx.fillStyle = "white"
+ctx.beginPath()
+ctx.arc(145, 145, 14, 0, 2 * Math.PI)
+ctx.fill()
