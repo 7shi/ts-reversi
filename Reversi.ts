@@ -1,5 +1,5 @@
 var canvas = <HTMLCanvasElement>document.createElement("canvas")
-canvas.width = 260
+canvas.width = 300
 canvas.height = 260
 document.body.appendChild(canvas)
 var ctx = canvas.getContext("2d")
@@ -35,6 +35,11 @@ class Board {
 				drawStone(x, y, this.board[y][x])
 			}
 		}
+		drawStone(8.3, 6.5, this.player)
+		ctx.font = "10pt sans-serif"
+		ctx.textAlign = "center"
+		ctx.textBaseline = "middle"
+		ctx.fillText("Turn", 275, 245)
 	}
 	
 	next(x: number, y: number) {
