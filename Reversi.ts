@@ -16,6 +16,8 @@ class Board {
 		[0, 0, 0, 0, 0, 0, 0, 0],
 	];
 	player = 1;
+	black = 2;
+	white = 2;
 	
 	draw() {
 		ctx.fillStyle = "green"
@@ -40,6 +42,10 @@ class Board {
 		ctx.textAlign = "center"
 		ctx.textBaseline = "middle"
 		ctx.fillText("Turn", 275, 245)
+		drawStone(8.3, 0, 1)
+		ctx.fillText(this.black.toString(), 275, 55)
+		drawStone(8.3, 2, 2)
+		ctx.fillText(this.white.toString(), 275, 115)
 	}
 	
 	next(x: number, y: number) {
@@ -63,6 +69,7 @@ class Board {
 		if (stone > 0) {
 			this.board[y][x] = this.player
 			stone++
+			this.count()
 		}
 		return stone
 	}
@@ -98,6 +105,20 @@ class Board {
 	
 	change() {
 		this.player = 3 - this.player
+	}
+	
+	count() {
+		this.black = 0
+		this.white = 0
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				if (this.board[y][x] == 1) {
+					this.black++
+				} else if (this.board[y][x] == 2) {
+					this.white++
+				}
+			}
+		}
 	}
 }
 
