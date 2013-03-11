@@ -50,6 +50,18 @@ class Board {
 				this.board[y][x] = 1
 				this.board[y][x + 1] = 1
 			}
+			if (this.check(x - 1, y, 2) && this.check(x - 2, y, 1)) {
+				this.board[y][x] = 1
+				this.board[y][x - 1] = 1
+			}
+			if (this.check(x, y + 1, 2) && this.check(x, y + 2, 1)) {
+				this.board[y][x] = 1
+				this.board[y + 1][x] = 1
+			}
+			if (this.check(x, y - 1, 2) && this.check(x, y - 2, 1)) {
+				this.board[y][x] = 1
+				this.board[y - 1][x] = 1
+			}
 		}
 	}
 	
