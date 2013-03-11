@@ -45,24 +45,27 @@ class Board {
 	}
 	
 	put(x: number, y: number) {
+		var stone = 0
+		stone += this.putDirection(x, y,  1,  0)
+		stone += this.putDirection(x, y, -1,  0)
+		stone += this.putDirection(x, y,  0,  1)
+		stone += this.putDirection(x, y,  0, -1)
+		if (stone > 0) {
+			this.board[y][x] = 1
+			stone++
+		}
+		return stone
+	}
+	
+	putDirection(x: number, y: number, dx: number, dy: number) {
 		if (this.check(x, y, 0)) {
-			if (this.check(x + 1, y, 2) && this.check(x + 2, y, 1)) {
-				this.board[y][x] = 1
-				this.board[y][x + 1] = 1
-			}
-			if (this.check(x - 1, y, 2) && this.check(x - 2, y, 1)) {
-				this.board[y][x] = 1
-				this.board[y][x - 1] = 1
-			}
-			if (this.check(x, y + 1, 2) && this.check(x, y + 2, 1)) {
-				this.board[y][x] = 1
-				this.board[y + 1][x] = 1
-			}
-			if (this.check(x, y - 1, 2) && this.check(x, y - 2, 1)) {
-				this.board[y][x] = 1
-				this.board[y - 1][x] = 1
+			if (this.check(x + dx, y + dy, 2) &&
+				this.check(x + dx * 2, y + dy * 2, 1)) {
+				this.board[y + dy][x + dx] = 1
+				return 1
 			}
 		}
+		return 0
 	}
 	
 	check(x: number, y: number, n: number) {
