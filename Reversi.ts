@@ -5,7 +5,7 @@ document.body.appendChild(canvas)
 var ctx = canvas.getContext("2d")
 
 class Board {
-	board : number[] = [
+	board : number[][] = [
 		[0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0],
