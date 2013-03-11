@@ -18,6 +18,7 @@ class Board {
 	player = 1;
 	black = 2;
 	white = 2;
+	message = "";
 	
 	draw() {
 		ctx.fillStyle = "green"
@@ -46,6 +47,16 @@ class Board {
 		ctx.fillText(this.black.toString(), 275, 55)
 		drawStone(8.3, 2, 2)
 		ctx.fillText(this.white.toString(), 275, 115)
+		if (this.message != "") {
+			ctx.fillStyle = "white"
+			ctx.strokeStyle = "red"
+			ctx.beginPath()
+			ctx.rect(20, 120, 220, 20)
+			ctx.fill()
+			ctx.stroke()
+			ctx.fillStyle = "black"
+			ctx.fillText(this.message, 120, 130)
+		}
 	}
 	
 	next(x: number, y: number) {
@@ -105,6 +116,17 @@ class Board {
 	
 	change() {
 		this.player = 3 - this.player
+		if (this.canPut()) return 1
+		this.player = 3 - this.player
+		if (this.canPut()) return 2
+		if (this.black > this.white) {
+			this.message = "Black Wins!"
+		} else if (this.black < this.white) {
+			this.message = "White Wins!"
+		} else {
+			this.message = "Draw!"
+		}
+		return 3
 	}
 	
 	count() {
@@ -119,6 +141,46 @@ class Board {
 				}
 			}
 		}
+	}
+	
+	checkCount(x: number, y: number) {
+		return this.countDirection(x, y,  1,  0) > 0 ||
+			this.countDirection(x, y, -1,  0) > 0 ||
+			this.countDirection(x, y,  0,  1) > 0 ||
+			this.countDirection(x, y,  0, -1) > 0 ||
+			this.countDirection(x, y,  1,  1) > 0 ||
+			this.countDirection(x, y,  1, -1) > 0 ||
+			this.countDirection(x, y, -1,  1) > 0 ||
+			this.countDirection(x, y, -1, -1) > 0
+	}
+	
+	countDirection(x: number, y: number, dx: number, dy: number) {
+		if (this.check(x, y, 0)) {
+			var rival = 3 - this.player
+			var stone = 0
+			var x1 = x + dx
+			var y1 = y + dy
+			while (this.check(x1, y1, rival)) {
+				stone++
+				x1 += dx
+				y1 += dy
+			}
+			if (stone > 0 && this.check(x1, y1, this.player)) {
+				return stone
+			}
+		}
+		return 0
+	}
+	
+	canPut() {
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				if (this.checkCount(x, y)) {
+					return true
+				}
+			}
+		}
+		return false
 	}
 }
 
