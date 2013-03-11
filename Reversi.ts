@@ -43,6 +43,15 @@ class Board {
 				this.board[y][x] = 0;
 		}
 	}
+	
+	put(x: number, y: number) {
+		if (0 <= x && x <= 7 && 0 <= y && y <= 7 && this.board[y][x] == 0) {
+			if (this.board[y][x + 1] == 2 && this.board[y][x + 2] == 1) {
+				this.board[y][x] = 1;
+				this.board[y][x + 1] = 1;
+			}
+		}
+	}
 }
 
 var board = new Board
@@ -52,7 +61,7 @@ canvas.onmousedown = e => {
 	var r = canvas.getBoundingClientRect()
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
-	board.next(x, y)
+	board.put(x, y)
 	board.draw()
 }
 
