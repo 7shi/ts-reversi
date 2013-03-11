@@ -188,6 +188,11 @@ var board = new Board
 board.draw()
 
 canvas.onmousedown = e => {
+	if (board.message != "") {
+		board = new Board
+		board.draw()
+		return
+	}
 	var r = canvas.getBoundingClientRect()
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
