@@ -18,22 +18,14 @@ for (var i = 0; i <= 8; i++)
 	ctx.stroke()
 }
 
-ctx.fillStyle = "white"
-ctx.beginPath()
-ctx.arc(115, 115, 14, 0, 2 * Math.PI)
-ctx.fill()
+drawStone(3, 3, "white")
+drawStone(4, 3, "black")
+drawStone(3, 4, "black")
+drawStone(4, 4, "white")
 
-ctx.fillStyle = "black"
-ctx.beginPath()
-ctx.arc(145, 115, 14, 0, 2 * Math.PI)
-ctx.fill()
-
-ctx.fillStyle = "black"
-ctx.beginPath()
-ctx.arc(115, 145, 14, 0, 2 * Math.PI)
-ctx.fill()
-
-ctx.fillStyle = "white"
-ctx.beginPath()
-ctx.arc(145, 145, 14, 0, 2 * Math.PI)
-ctx.fill()
+function drawStone(x: number, y: number, c: string) {
+	ctx.fillStyle = c
+	ctx.beginPath()
+	ctx.arc(x * 30 + 25, y * 30 + 25, 14, 0, 2 * Math.PI)
+	ctx.fill()
+}
