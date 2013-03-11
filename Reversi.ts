@@ -4,27 +4,47 @@ canvas.height = 260
 document.body.appendChild(canvas)
 var ctx = canvas.getContext("2d")
 
-ctx.fillStyle = "green"
-ctx.fillRect(0, 0, canvas.width, canvas.height)
+var board = [
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 2, 1, 0, 0, 0],
+	[0, 0, 0, 1, 2, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+]
 
-ctx.strokeStyle = "black"
-for (var i = 0; i <= 8; i++)
-{
-	ctx.beginPath()
-	ctx.moveTo(i * 30 + 10,  10)
-	ctx.lineTo(i * 30 + 10, 250)
-	ctx.moveTo( 10, i * 30 + 10)
-	ctx.lineTo(250, i * 30 + 10)
-	ctx.stroke()
+drawBoard()
+
+function drawBoard() {
+	ctx.fillStyle = "green"
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.strokeStyle = "black"
+	for (var i = 0; i <= 8; i++)
+	{
+		ctx.beginPath()
+		ctx.moveTo(i * 30 + 10,  10)
+		ctx.lineTo(i * 30 + 10, 250)
+		ctx.moveTo( 10, i * 30 + 10)
+		ctx.lineTo(250, i * 30 + 10)
+		ctx.stroke()
+	}
+	for (var y = 0; y <= 7; y++) {
+		for (var x = 0; x <= 7; x++) {
+			drawStone(x, y, board[y][x])
+		}
+	}
 }
 
-drawStone(3, 3, "white")
-drawStone(4, 3, "black")
-drawStone(3, 4, "black")
-drawStone(4, 4, "white")
-
-function drawStone(x: number, y: number, c: string) {
-	ctx.fillStyle = c
+function drawStone(x: number, y: number, c: number) {
+	if (c == 1) {
+		ctx.fillStyle = "black"
+	} else if (c == 2) {
+		ctx.fillStyle = "white"
+	} else {
+		return
+	}
 	ctx.beginPath()
 	ctx.arc(x * 30 + 25, y * 30 + 25, 14, 0, 2 * Math.PI)
 	ctx.fill()
