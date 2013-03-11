@@ -40,17 +40,21 @@ class Board {
 		if (0 <= x && x <= 7 && 0 <= y && y <= 7) {
 			this.board[y][x]++
 			if (this.board[y][x] == 3)
-				this.board[y][x] = 0;
+				this.board[y][x] = 0
 		}
 	}
 	
 	put(x: number, y: number) {
-		if (0 <= x && x <= 7 && 0 <= y && y <= 7 && this.board[y][x] == 0) {
-			if (this.board[y][x + 1] == 2 && this.board[y][x + 2] == 1) {
-				this.board[y][x] = 1;
-				this.board[y][x + 1] = 1;
+		if (this.check(x, y, 0)) {
+			if (this.check(x + 1, y, 2) && this.check(x + 2, y, 1)) {
+				this.board[y][x] = 1
+				this.board[y][x + 1] = 1
 			}
 		}
+	}
+	
+	check(x: number, y: number, n: number) {
+		return 0 <= x && x <= 7 && 0 <= y && y <= 7 && this.board[y][x] == n
 	}
 }
 
