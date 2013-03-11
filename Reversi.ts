@@ -50,6 +50,10 @@ class Board {
 		stone += this.putDirection(x, y, -1,  0)
 		stone += this.putDirection(x, y,  0,  1)
 		stone += this.putDirection(x, y,  0, -1)
+		stone += this.putDirection(x, y,  1,  1)
+		stone += this.putDirection(x, y,  1, -1)
+		stone += this.putDirection(x, y, -1,  1)
+		stone += this.putDirection(x, y, -1, -1)
 		if (stone > 0) {
 			this.board[y][x] = 1
 			stone++
