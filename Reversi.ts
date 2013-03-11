@@ -15,6 +15,7 @@ class Board {
 		[0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0],
 	];
+	player = 1;
 	
 	draw() {
 		ctx.fillStyle = "green"
@@ -55,7 +56,7 @@ class Board {
 		stone += this.putDirection(x, y, -1,  1)
 		stone += this.putDirection(x, y, -1, -1)
 		if (stone > 0) {
-			this.board[y][x] = 1
+			this.board[y][x] = this.player
 			stone++
 		}
 		return stone
@@ -63,9 +64,10 @@ class Board {
 	
 	putDirection(x: number, y: number, dx: number, dy: number) {
 		if (this.check(x, y, 0)) {
-			if (this.check(x + dx, y + dy, 2) &&
-				this.check(x + dx * 2, y + dy * 2, 1)) {
-				this.board[y + dy][x + dx] = 1
+			var rival = 3 - this.player
+			if (this.check(x + dx, y + dy, rival) &&
+				this.check(x + dx * 2, y + dy * 2, this.player)) {
+				this.board[y + dy][x + dx] = this.player
 				return 1
 			}
 		}
@@ -74,6 +76,10 @@ class Board {
 	
 	check(x: number, y: number, n: number) {
 		return 0 <= x && x <= 7 && 0 <= y && y <= 7 && this.board[y][x] == n
+	}
+	
+	change() {
+		this.player = 3 - this.player
 	}
 }
 
@@ -84,8 +90,10 @@ canvas.onmousedown = e => {
 	var r = canvas.getBoundingClientRect()
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
-	board.put(x, y)
-	board.draw()
+	if (board.put(x, y) > 0) {
+		board.change()
+		board.draw()
+	}
 }
 
 function drawStone(x: number, y: number, c: number) {
