@@ -165,6 +165,15 @@ class Board {
 		}
 		return false
 	}
+	
+	thinkRandom() {
+		var x, y
+		do {
+			x = Math.floor(Math.random() * 8)
+			y = Math.floor(Math.random() * 8)
+		} while (this.put(x, y) == 0)
+		return [x, y]
+	}
 }
 
 var board = new Board
@@ -180,7 +189,12 @@ canvas.onmousedown = e => {
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
 	if (board.put(x, y) > 0) {
-		board.change()
+		if (board.change() == 1) {
+			do {
+				board.draw()
+				board.thinkRandom()
+			} while (board.change() == 2)
+		}
 		board.draw()
 	}
 }
