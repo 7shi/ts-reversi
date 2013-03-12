@@ -333,4 +333,10 @@ class Board {
 	}
 }
 
-var board = new Board(createCanvas())
+var board1 = new Board(createCanvas())
+var board2 = new Board(createCanvas())
+var board3 = new Board(createCanvas())
+var board4 = new Board(createCanvas())
+board1.think = board1.thinkRandom
+board2.think = board2.thinkMany
+board4.showWin = true
