@@ -174,6 +174,36 @@ class Board {
 		} while (this.put(x, y) == 0)
 		return [x, y]
 	}
+	
+	countPut(x: number, y: number) {
+		var stone = 0
+		if (this.check(x, y, 0)) {
+			stone += this.countDirection(x, y,  1,  0)
+			stone += this.countDirection(x, y, -1,  0)
+			stone += this.countDirection(x, y,  0,  1)
+			stone += this.countDirection(x, y,  0, -1)
+			stone += this.countDirection(x, y,  1,  1)
+			stone += this.countDirection(x, y,  1, -1)
+			stone += this.countDirection(x, y, -1,  1)
+			stone += this.countDirection(x, y, -1, -1)
+		}
+		return stone
+	}
+	
+	thinkMany() {
+		var max = 0, tx = 0, ty = 0
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				var stone = this.countPut(x, y)
+				if (max < stone) {
+					max = stone
+					tx = x
+					ty = y
+				}
+			}
+		}
+		if (max > 0) this.put(tx, ty)
+	}
 }
 
 var board = new Board
@@ -197,7 +227,7 @@ canvas.onmousedown = e => {
 		ignore = true;
 		(function f {
 			setTimeout(() => {
-				board.thinkRandom()
+				board.thinkMany()
 				var chg = board.change()
 				board.draw()
 				if (chg == 2) f(); else ignore = false
