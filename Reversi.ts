@@ -86,28 +86,11 @@ class Board {
 	}
 	
 	putDirection(x: number, y: number, dx: number, dy: number) {
-		if (this.check(x, y, 0)) {
-			var rival = 3 - this.player
-			var stone = 0
-			var x1 = x + dx
-			var y1 = y + dy
-			while (this.check(x1, y1, rival)) {
-				stone++
-				x1 += dx
-				y1 += dy
-			}
-			if (stone > 0 && this.check(x1, y1, this.player)) {
-				var x2 = x + dx
-				var y2 = y + dy
-				while (this.check(x2, y2, rival)) {
-					this.board[y2][x2] = this.player
-					x2 += dx
-					y2 += dy
-				}
-				return stone
-			}
+		var stone = this.countDirection(x, y, dx, dy)
+		for (var i = 1; i <= stone; i++) {
+			this.board[y + dy * i][x + dx * i] = this.player
 		}
-		return 0
+		return stone
 	}
 	
 	check(x: number, y: number, n: number) {
