@@ -33,15 +33,20 @@ class Board {
 			ctx.lineTo(250, i * 30 + 10)
 			ctx.stroke()
 		}
-		for (var y = 0; y <= 7; y++) {
-			for (var x = 0; x <= 7; x++) {
-				drawStone(x, y, this.board[y][x])
-			}
-		}
-		drawStone(8.3, 6.5, this.player)
 		ctx.font = "10pt sans-serif"
 		ctx.textAlign = "center"
 		ctx.textBaseline = "middle"
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				drawStone(x, y, this.board[y][x])
+				if (this.win != undefined && this.win[y][x] != undefined) {
+					ctx.fillStyle = "red"
+					ctx.fillText(this.win[y][x].toString(),
+						x * 30 + 25, y * 30 + 25)
+				}
+			}
+		}
+		drawStone(8.3, 6.5, this.player)
 		ctx.fillText("Turn", 275, 245)
 		drawStone(8.3, 0, 1)
 		ctx.fillText(this.black.toString(), 275, 55)
@@ -279,6 +284,7 @@ canvas.onmousedown = e => {
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
 	if (board.put(x, y) > 0) {
+		board.win = undefined
 		var chg = board.change()
 		board.draw()
 		if (chg != 1) return;
