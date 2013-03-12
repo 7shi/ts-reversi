@@ -178,8 +178,10 @@ class Board {
 
 var board = new Board
 board.draw()
+var ignore = false
 
 canvas.onmousedown = e => {
+	if (ignore) return
 	if (board.message != "") {
 		board = new Board
 		board.draw()
@@ -189,13 +191,18 @@ canvas.onmousedown = e => {
 	var x = Math.floor((e.clientX - r.left - 10) / 30)
 	var y = Math.floor((e.clientY - r.top  - 10) / 30)
 	if (board.put(x, y) > 0) {
-		if (board.change() == 1) {
-			do {
-				board.draw()
-				board.thinkRandom()
-			} while (board.change() == 2)
-		}
+		var chg = board.change()
 		board.draw()
+		if (chg != 1) return;
+		ignore = true;
+		(function f {
+			setTimeout(() => {
+				board.thinkRandom()
+				var chg = board.change()
+				board.draw()
+				if (chg == 2) f(); else ignore = false
+			}, 50)
+		})()
 	}
 }
 
