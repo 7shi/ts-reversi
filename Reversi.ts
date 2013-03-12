@@ -1,28 +1,54 @@
-var canvas = <HTMLCanvasElement>document.createElement("canvas")
-canvas.width = 300
-canvas.height = 260
-document.body.appendChild(canvas)
-var ctx = canvas.getContext("2d")
+function createCanvas {
+	var canvas = <HTMLCanvasElement>document.createElement("canvas")
+	canvas.width = 300
+	canvas.height = 260
+	document.body.appendChild(canvas)
+	return canvas
+}
 
 class Board {
-	board : number[][] = [
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 2, 1, 0, 0, 0],
-		[0, 0, 0, 1, 2, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-	];
-	player = 1;
-	black = 2;
-	white = 2;
-	message = "";
+	ctx: CanvasRenderingContext2D;
+	board: number[][];
+	win: number[][];
+	player: number;
+	black: number;
+	white: number;
+	message: string;
+	ignore = false;
+	showWin = false;
+	think: () => void;
+	
+	constructor(public canvas: HTMLCanvasElement) {
+		this.init()
+		if (canvas == null) return
+		this.ctx = canvas.getContext("2d")
+		this.draw()
+		this.think = this.thinkMonteCarlo
+		canvas.onmousedown = this.onMouseDown.bind(this)
+	}
+	
+	init() {
+		this.board = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 2, 1, 0, 0, 0],
+			[0, 0, 0, 1, 2, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+		]
+		this.win = [[],[],[],[],[],[],[],[]]
+		this.player = 1
+		this.black = 2
+		this.white = 2
+		this.message = ""
+	}
 	
 	draw() {
+		var ctx = this.ctx
 		ctx.fillStyle = "green"
-		ctx.fillRect(0, 0, canvas.width, canvas.height)
+		ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 		ctx.strokeStyle = "black"
 		for (var i = 0; i <= 8; i++)
 		{
@@ -38,19 +64,19 @@ class Board {
 		ctx.textBaseline = "middle"
 		for (var y = 0; y <= 7; y++) {
 			for (var x = 0; x <= 7; x++) {
-				drawStone(x, y, this.board[y][x])
-				if (this.win != undefined && this.win[y][x] != undefined) {
+				this.drawStone(x, y, this.board[y][x])
+				if (this.showWin && this.win != undefined && this.win[y][x] != undefined) {
 					ctx.fillStyle = "red"
 					ctx.fillText(this.win[y][x].toString(),
 						x * 30 + 25, y * 30 + 25)
 				}
 			}
 		}
-		drawStone(8.3, 6.5, this.player)
+		this.drawStone(8.3, 6.5, this.player)
 		ctx.fillText("Turn", 275, 245)
-		drawStone(8.3, 0, 1)
+		this.drawStone(8.3, 0, 1)
 		ctx.fillText(this.black.toString(), 275, 55)
-		drawStone(8.3, 2, 2)
+		this.drawStone(8.3, 2, 2)
 		ctx.fillText(this.white.toString(), 275, 115)
 		if (this.message != "") {
 			ctx.fillStyle = "white"
@@ -62,6 +88,20 @@ class Board {
 			ctx.fillStyle = "black"
 			ctx.fillText(this.message, 120, 130)
 		}
+	}
+
+	drawStone(x: number, y: number, c: number) {
+		var ctx = this.ctx
+		if (c == 1) {
+			ctx.fillStyle = "black"
+		} else if (c == 2) {
+			ctx.fillStyle = "white"
+		} else {
+			return
+		}
+		ctx.beginPath()
+		ctx.arc(x * 30 + 25, y * 30 + 25, 14, 0, 2 * Math.PI)
+		ctx.fill()
 	}
 	
 	next(x: number, y: number) {
@@ -211,20 +251,17 @@ class Board {
 	}
 	
 	clone() {
-		var ret = new Board
+		var ret = new Board(null)
 		for (var y = 0; y <= 7; y++) {
 			for (var x = 0; x <= 7; x++) {
 				ret.board[y][x] = this.board[y][x]
 			}
 		}
-		ret.player  = this.player
-		ret.black   = this.black
-		ret.white   = this.white
-		ret.message = this.message
+		ret.player = this.player
+		ret.black  = this.black
+		ret.white  = this.white
 		return ret
 	}
-	
-	win: number[][];
 	
 	thinkMonteCarlo() {
 		this.win = [[],[],[],[],[],[],[],[]]
@@ -267,48 +304,33 @@ class Board {
 			this.thinkRandom()
 		}
 	}
-}
-
-var board = new Board
-board.draw()
-var ignore = false
-
-canvas.onmousedown = e => {
-	if (ignore) return
-	if (board.message != "") {
-		board = new Board
-		board.draw()
-		return
-	}
-	var r = canvas.getBoundingClientRect()
-	var x = Math.floor((e.clientX - r.left - 10) / 30)
-	var y = Math.floor((e.clientY - r.top  - 10) / 30)
-	if (board.put(x, y) > 0) {
-		board.win = undefined
-		var chg = board.change()
-		board.draw()
-		if (chg != 1) return;
-		ignore = true;
+	
+	onMouseDown(e: MouseEvent) {
+		if (this.ignore) return
+		if (this.message != "") {
+			this.init()
+			this.draw()
+			return
+		}
+		var r = this.canvas.getBoundingClientRect()
+		var x = Math.floor((e.clientX - r.left - 10) / 30)
+		var y = Math.floor((e.clientY - r.top  - 10) / 30)
+		if (this.put(x, y) == 0) return
+		this.win = undefined
+		var chg = this.change()
+		this.draw()
+		if (chg != 1) return
+		this.ignore = true
+		var board = this;
 		(function f {
 			setTimeout(() => {
-				board.thinkMonteCarlo()
+				board.think()
 				var chg = board.change()
 				board.draw()
-				if (chg == 2) f(); else ignore = false
+				if (chg == 2) f(); else board.ignore = false
 			}, 50)
 		})()
 	}
 }
 
-function drawStone(x: number, y: number, c: number) {
-	if (c == 1) {
-		ctx.fillStyle = "black"
-	} else if (c == 2) {
-		ctx.fillStyle = "white"
-	} else {
-		return
-	}
-	ctx.beginPath()
-	ctx.arc(x * 30 + 25, y * 30 + 25, 14, 0, 2 * Math.PI)
-	ctx.fill()
-}
+var board = new Board(createCanvas())
