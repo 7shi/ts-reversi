@@ -204,6 +204,64 @@ class Board {
 		}
 		if (max > 0) this.put(tx, ty)
 	}
+	
+	clone() {
+		var ret = new Board
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				ret.board[y][x] = this.board[y][x]
+			}
+		}
+		ret.player  = this.player
+		ret.black   = this.black
+		ret.white   = this.white
+		ret.message = this.message
+		return ret
+	}
+	
+	win: number[][];
+	
+	thinkMonteCarlo() {
+		this.win = [[],[],[],[],[],[],[],[]]
+		for (var i = 1; i <= 1000; i++) {
+			var board = this.clone()
+			var pt = board.thinkRandom()
+			var x = pt[0], y = pt[1]
+			while (board.change() != 3) {
+				board.thinkRandom()
+			}
+			if ((this.player == 1 && board.black > board.white) ||
+				(this.player == 2 && board.black < board.white)) {
+				if (this.win[y][x] == undefined) {
+					this.win[y][x] = 1
+				} else {
+					this.win[y][x]++
+				}
+			} else if (board.black != board.white) {
+				if (this.win[y][x] == undefined) {
+					this.win[y][x] = -1
+				} else {
+					this.win[y][x]--
+				}
+			}
+		}
+		var max, tx, ty
+		for (var y = 0; y <= 7; y++) {
+			for (var x = 0; x <= 7; x++) {
+				if (this.win[y][x] != undefined &&
+					(max == undefined || max < this.win[y][x])) {
+					max = this.win[y][x]
+					tx = x
+					ty = y
+				}
+			}
+		}
+		if (max != undefined) {
+			this.put(tx, ty)
+		} else {
+			this.thinkRandom()
+		}
+	}
 }
 
 var board = new Board
@@ -227,7 +285,7 @@ canvas.onmousedown = e => {
 		ignore = true;
 		(function f {
 			setTimeout(() => {
-				board.thinkMany()
+				board.thinkMonteCarlo()
 				var chg = board.change()
 				board.draw()
 				if (chg == 2) f(); else ignore = false
